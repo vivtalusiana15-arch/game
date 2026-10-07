@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Benar Salah - SDN Kesilir 02</title>
+  <meta name="description" content="Game Edukasi Benar atau Salah Berbasis Kamera dengan Kurikulum Deep Learning untuk SD Kelas 1-6 SDN KESILIR 02">
+  
+  <!-- Tailwind CSS & FontAwesome CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Canvas Confetti untuk Efek Kemenangan -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              purple: '#6C5CE7',
+              pink: '#FD79A8',
+              yellow: '#FDCB6E',
+              green: '#00B894',
+              red: '#D63031',
+              dark: '#0F172A'
+            }
+          },
+          fontFamily: {
+            sans: ['Poppins', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    .pulse-glow { animation: pulseGlow 2s infinite; }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 15px rgba(108, 92, 231, 0.4); }
+      50% { box-shadow: 0 0 30px rgba(253, 121, 168, 0.8); }
+    }
+    .mirror { transform: scaleX(-1); }
+  </style>
+</head>
+
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+  <!-- NAVBAR UTAMA -->
+  <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-md border-b border-purple-200 dark:border-slate-700">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="showScreen('home')">
+        <div class="bg-gradient-to-tr from-brand-purple to-brand-pink text-white w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg">
+          🎮
+        </div>
+        <div>
+          <h1 class="font-extrabold text-lg md:text-xl text-brand-purple dark:text-purple-400 leading-tight">BENAR / SALAH</h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">SDN KESILIR 02</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Highscore Badge -->
+        <div class="hidden sm:flex items-center gap-2 bg-yellow-100 dark:bg-slate-700 px-3 py-1.5 rounded-full border border-yellow-300 dark:border-yellow-600 text-xs font-bold text-amber-700 dark:text-yellow-400">
+          <i class="fa-solid fa-trophy text-yellow-500">
+          </i> Rekor: <span id="navHighScore">0</span>
+        </div>
+
+        <!-- Dark Mode Toggle -->
+        <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-yellow-400 hover:scale-105 transition">
+          <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTAINER UTAMA PERMAINAN -->
+  <main class="flex-grow max-w-5xl w-full mx-auto p-4 flex flex-col justify-center">
+
+    <!-- 1. LAYAR BERANDA & PILIH KELAS -->
+    <section id="screenHome" class="space-y-8 py-6">
+      <div class="text-center space-y-4 max-w-2xl mx-auto">
+        <span class="inline-block px-4 py-1.5 bg-purple-100 dark:bg-purple-900/50 text-brand-purple dark:text-purple-300 font-bold text-xs md:text-sm rounded-full border border-purple-200 dark:border-purple-700">
+          ✨ Deep Learning Interactive Game
+        </span>
+        <h2 class="text-3xl md:text-5xl font-black text-slate-900 dark:text-white leading-tight">
+          Gerakkan Tanganmu, Jawab Soalnya! 🚀
+        </h2>
+        <p class="text-slate-600 dark:text-slate-300 text-sm md:text-base">
+          Gunakan kamera HP / Laptop untuk memilih jawaban <b class="text-emerald-500">BENAR (Kiri)</b> atau <b class="text-rose-500">SALAH (Kanan)</b>, atau ketuk tombol langsung!
+        </p>
+      </div>
+
+      <!-- KARTU PILIH KELAS -->
+      <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-xl border border-purple-100 dark:border-slate-700 space-y-4">
+        <h3 class="text-center font-extrabold text-slate-700 dark:text-slate-200 text-lg flex items-center justify-center gap-2">
+          <i class="fa-solid fa-graduation-cap text-brand-purple"></i> Pilih Kelas Kamu
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-3" id="classGrid">
+          <!-- Tombol kelas di-generate dinamis oleh JS -->
+        </div>
+      </div>
+
+      <!-- PENGATURAN MODE KAMERA & NAMA -->
+      <div class="bg-slate-200/60 dark:bg-slate-800/60 p-5 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="w-full md:w-1/2 space-y-1">
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase">Nama Pemain</label>
+          <input type="text" id="playerNameInput" placeholder="Masukkan nama kamu..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 font-semibold focus:ring-2 focus:ring-brand-purple outline-none">
+        </div>
+        <div class="w-full md:w-1/2 flex items-center justify-between bg-white dark:bg-slate-700 p-3 rounded-xl border border-slate-300 dark:border-slate-600">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-camera text-brand-purple text-lg"></i>
+            <div>
+              <div class="font-bold text-xs">Sensor Kamera</div>
+              <div class="text-[10px] text-slate-500 dark:text-slate-300">Gunakan deteksi gerak tangan</div>
+            </div>
+          </div>
+          <input type="checkbox" id="cameraToggle" checked class="w-5 h-5 accent-brand-purple cursor-pointer">
+        </div>
+      </div>
+
+      <!-- TOMBOL MULAI -->
+      <div class="text-center">
+        <button onclick="startGame()" class="pulse-glow w-full md:w-auto px-10 py-4 bg-gradient-to-r from-brand-purple to-brand-pink text-white font-extrabold text-xl rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition flex items-center justify-center gap-3 mx-auto">
+          <i class="fa-solid fa-play"></i> MULAI BERMAIN NOW
+        </button>
+      </div>
+    </section>
+
+
+    <!-- 2. LAYAR ARENA GAME -->
+    <section id="screenGame" class="hidden space-y-4">
+      <!-- HUD Top Bar -->
+      <div class="flex items-center justify-between bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700">
+        <div class="flex items-center gap-3">
+          <span id="gameGradeBadge" class="bg-purple-100 text-brand-purple dark:bg-purple-900/60 dark:text-purple-300 text-xs font-black px-3 py-1 rounded-lg">Kelas 1</span>
+          <span id="questionProgress" class="text-xs font-bold text-slate-500 dark:text-slate-400">Soal 1 / 5</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="text-right">
+            <div class="text-[10px] uppercase font-bold text-slate-400">Skor Kamu</div>
+            <div id="gameScore" class="font-black text-xl text-emerald-500">0</div>
+          </div>
+          <button onclick="quitGame()" class="text-xs bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 px-3 py-1.5 rounded-lg font-bold hover:bg-rose-200">
+            Keluar
+          </button>
+        </div>
+      </div>
+
+      <!-- TIMER BAR -->
+      <div class="w-full bg-slate-200 dark:bg-slate-700 h-3 rounded-full overflow-hidden">
+        <div id="timerBar" class="bg-gradient-to-r from-emerald-400 to-brand-purple h-full w-full transition-all duration-100 linear"></div>
+      </div>
+
+      <!-- KARTU SOAL (DEEP LEARNING CONTEXT) -->
+      <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-3xl shadow-xl border-2 border-purple-200 dark:border-slate-700 text-center space-y-4 relative overflow-hidden">
+        <div class="inline-block px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-yellow-300 text-xs font-extrabold rounded-md uppercase tracking-wider" id="questionCategory">
+          Refleksi &amp; Pemahaman
+        </div>
+        <h3 id="questionText" class="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-100 leading-snug min-h-[70px] flex items-center justify-center">
+          Memuat pertanyaan...
+        </h3>
+      </div>
+
+      <!-- AREA KAMERA & KONTROL AUKSI -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Kamera Motion Detection Box -->
+        <div id="cameraBox" class="relative bg-slate-900 rounded-2xl overflow-hidden shadow-lg border-2 border-slate-700 h-64 md:h-72 flex items-center justify-center">
+          <video id="webcam" class="w-full h-full object-cover mirror" playsinline autoplay muted></video>
+          <canvas id="motionCanvas" class="hidden"></canvas>
+          
+          <!-- Overlay Zona Benar / Salah pada Video -->
+          <div id="cameraOverlay" class="absolute inset-0 grid grid-cols-2 pointer-events-none">
+            <div id="zoneLeft" class="border-r-2 border-dashed border-emerald-400/50 bg-emerald-500/10 flex flex-col items-center justify-center transition-all">
+              <span class="bg-emerald-500 text-white font-black px-3 py-1 rounded-full text-xs shadow">👈 BENAR</span>
+              <div id="meterLeft" class="w-16 bg-slate-700/80 h-2 rounded-full mt-2 overflow-hidden">
+                <div id="barLeft" class="bg-emerald-400 h-full w-0 transition-all"></div>
+              </div>
+            </div>
+            <div id="zoneRight" class="bg-rose-500/10 flex flex-col items-center justify-center transition-all">
+              <span class="bg-rose-500 text-white font-black px-3 py-1 rounded-full text-xs shadow">SALAH 👉</span>
+              <div id="meterRight" class="w-16 bg-slate-700/80 h-2 rounded-full mt-2 overflow-hidden">
+                <div id="barRight" class="bg-rose-400 h-full w-0 transition-all"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Status Kamera Off Fallback -->
+          <div id="cameraOffNotice" class="hidden absolute inset-0 bg-slate-800/90 text-slate-300 flex flex-col items-center justify-center p-4 text-center">
+            <i class="fa-solid fa-video-slash text-3xl mb-2 text-rose-400"></i>
+            <p class="text-xs font-bold">Kamera Nonaktif / Tidak Diizinkan</p>
+            <p class="text-[10px] text-slate-400">Gunakan tombol Benar / Salah di bawah untuk menjawab!</p>
+          </div>
+        </div>
+
+        <!-- TOMBOL PILIHAN MANUAL (UNTUK MOBILE / NON-KAMERA) -->
+        <div class="grid grid-cols-2 gap-4 h-64 md:h-72">
+          <button onclick="submitAnswer(true)" class="group relative bg-gradient-to-b from-emerald-400 to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 text-white rounded-2xl shadow-xl flex flex-col items-center justify-center gap-2 p-4 transition transform active:scale-95 border-b-8 border-emerald-800">
+            <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-3xl group-hover:scale-110 transition">
+              👍
+            </div>
+            <span class="font-black text-2xl tracking-wider">BENAR</span>
+            <span class="text-[10px] opacity-80 uppercase font-semibold">Sentuh / Lambaikan Kiri</span>
+          </button>
+
+          <button onclick="submitAnswer(false)" class="group relative bg-gradient-to-b from-rose-400 to-rose-600 hover:from-rose-500 hover:to-rose-700 text-white rounded-2xl shadow-xl flex flex-col items-center justify-center gap-2 p-4 transition transform active:scale-95 border-b-8 border-rose-800">
+            <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-3xl group-hover:scale-110 transition">
+              👎
+            </div>
+            <span class="font-black text-2xl tracking-wider">SALAH</span>
+            <span class="text-[10px] opacity-80 uppercase font-semibold">Sentuh / Lambaikan Kanan</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 3. MODAL DEEP LEARNING EXPLANATION (MUNCUL TIAP SELESAI SOAL) -->
+    <div id="explanationModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-white dark:bg-slate-800 max-w-lg w-full rounded-3xl p-6 shadow-2xl border-2 border-purple-300 dark:border-slate-600 space-y-4 animate-bounce-in">
+        <div class="text-center space-y-1">
+          <div id="evalBadge" class="inline-block px-4 py-1 rounded-full text-xs font-black uppercase">
+            JAWABAN TEPAT! 🎉
+          </div>
+          <h4 class="text-xl font-black text-slate-800 dark:text-white">Refleksi Deep Learning</h4>
+        </div>
+
+        <div class="bg-slate-100 dark:bg-slate-700/60 p-4 rounded-2xl text-slate-700 dark:text-slate-200 text-sm leading-relaxed border-l-4 border-brand-purple" id="explanationContent">
+          Penjelasan pembelajaran mendalam akan muncul di sini...
+        </div>
+
+        <button onclick="nextQuestion()" class="w-full py-3.5 bg-brand-purple text-white font-extrabold text-base rounded-xl shadow-lg hover:bg-purple-700 transition flex items-center justify-center gap-2">
+          Lanjut Soal Berikutnya <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+
+    <!-- 4. LAYAR SKOR & SERTIFIKAT KELULUSAN -->
+    <section id="screenResult" class="hidden space-y-6 text-center py-6">
+      <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-2xl border border-purple-100 dark:border-slate-700 space-y-6 max-w-2xl mx-auto">
+        <div class="space-y-2">
+          <span class="text-5xl">🏆</span>
+          <h2 class="text-3xl font-black text-slate-900 dark:text-white">Permainan Selesai!</h2>
+          <p class="text-slate-500 dark:text-slate-400 text-sm">Berikut adalah pencapaian belajar kamu hari ini:</p>
+        </div>
+
+        <!-- Tampilan Skor Akhir -->
+        <div class="grid grid-cols-2 gap-4 bg-purple-50 dark:bg-slate-700/50 p-4 rounded-2xl">
+          <div>
+            <div class="text-xs font-bold text-slate-400 uppercase">Skor Akhir</div>
+            <div id="finalScore" class="text-4xl font-black text-brand-purple dark:text-purple-400">100</div>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-slate-400 uppercase">Akurasi</div>
+            <div id="finalAccuracy" class="text-4xl font-black text-emerald-500">100%</div>
+          </div>
+        </div>
+
+        <!-- SERTIFIKAT SIAP CETAK -->
+        <div id="certificateCard" class="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-slate-700 dark:to-slate-800 p-6 rounded-2xl border-4 border-double border-amber-300 dark:border-amber-600 text-left space-y-3 relative overflow-hidden">
+          <div class="flex justify-between items-start">
+            <div>
+              <div class="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-widest">Sertifikat Kelulusan</div>
+              <h3 class="font-extrabold text-lg text-slate-800 dark:text-amber-200">SDN KESILIR 02</h3>
+            </div>
+            <span class="text-2xl">🏅</span>
+          </div>
+
+          <p class="text-xs text-slate-600 dark:text-slate-300">Diberikan kepada siswa berprestasi:</p>
+          <div id="certPlayerName" class="text-xl font-black text-brand-purple dark:text-purple-300 border-b-2 border-amber-300 dark:border-amber-600 pb-1">
+            Siswa Hebat
+          </div>
+          <p class="text-xs text-slate-600 dark:text-slate-300">
+            Telah menyelesaikan kuis interaktif <b id="certGrade">Kelas 1</b> berorientasi <i>Deep Learning &amp; Berpikir Kritis</i>.
+          </p>
+          <div class="text-[10px] text-slate-400 text-right pt-2">
+            Verifikasi Digital SDN Kesilir 02 • <span id="certDate"></span>
+          </div>
+        </div>
+
+        <!-- TOMBOL AKSI HASIL -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button onclick="printCertificate()" class="flex-1 py-3 bg-amber-500 text-white font-bold rounded-xl shadow hover:bg-amber-600 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-print"></i> Cetak / Simpan Sertifikat
+          </button>
+          <button onclick="showScreen('home')" class="flex-1 py-3 bg-brand-purple text-white font-bold rounded-xl shadow hover:bg-purple-700 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-rotate-right"></i> Main Lagi
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="mt-auto py-4 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 text-center text-xs text-slate-500 dark:text-slate-400">
+    &copy; 2026 <b>SDN KESILIR 02</b> • Game Benar Salah Edukatif
+  </footer>
+
+  <!-- SCRIPT LOGIKA GAME COMPLETE -->
+  <script>
+    // ===================================================
+    // DATABASE SOAL DEEP LEARNING (KELAS 1 - KELAS 6)
+    // ===================================================
+    const QUESTION_BANK = {
+      1: [
+        {
+          q: "Saat melihat sampah plastik berserakan di halaman sekolah, membiarkannya adalah tindakan yang benar karena bukan kita yang membuangnya.",
+          a: false,
+          cat: "Kepedulian Lingkungan",
+          exp: "<b>Deep Learning:</b> Menjaga kebersihan sekolah adalah tanggung jawab bersama. Kepedulian lingkungan tumbuh dari aksi nyata tanpa menunggu perintah orang lain."
+        },
+        {
+          q: "Jika teman sekelas merasa sedih karena pensilnya patah, kita sebaiknya menghibur atau meminjamkan pensil cadangan.",
+          a: true,
+          cat: "Empati & Sosial",
+          exp: "<b>Deep Learning:</b> Empati menciptakan lingkungan belajar yang aman dan bahagia. Membantu teman melatih kecerdasan emosional kita sejak dini."
+        },
+        {
+          q: "Mencuci tangan dengan sabun sebelum makan menjaga tubuh kita dari kuman dan penyakit.",
+          a: true,
+          cat: "Kesehatan Diri",
+          exp: "<b>Deep Learning:</b> Kebiasaan hidup bersih adalah investasi jangka panjang untuk kesehatan tubuh dan pikiran agar siap belajar."
+        }
+      ],
+      2: [
+        {
+          q: "Mematikan keran air setelah selesai digunakan adalah bentuk tindakan menjaga kelestarian sumber daya alam.",
+          a: true,
+          cat: "Konservasi Alam",
+          exp: "<b>Deep Learning:</b> Air bersih adalah sumber daya terbatas. Menghemat air mengajarkan kita untuk bertanggung jawab atas masa depan bumi."
+        },
+        {
+          q: "Bergotong royong membersihkan kelas membuat pekerjaan terasa lebih berat dan menghabiskan waktu.",
+          a: false,
+          cat: "Gotong Royong",
+          exp: "<b>Deep Learning:</b> Gotong royong membagi beban kerja sehingga terasa lebih ringan, mempercepat penyelesaian tugas, dan mempererat kebersamaan."
+        }
+      ],
+      3: [
+        {
+          q: "Tumbuhan hijau membutuhkan cahaya matahari, air, dan udara untuk memasak makanannya sendiri (Fotosintesis).",
+          a: true,
+          cat: "Sains & Alam",
+          exp: "<b>Deep Learning:</b> Tumbuhan adalah penghasil oksigen utama di bumi. Memahami fotosintesis membantu kita menghargai pentingnya melestarikan pepohonan."
+        },
+        {
+          q: "Menggunakan botol minum sekali pakai setiap hari lebih ramah lingkungan daripada membawa tempat minum isi ulang.",
+          a: false,
+          cat: "Gaya Hidup Berkelanjutan",
+          exp: "<b>Deep Learning:</b> Sampah plastik sekali pakai menumpuk hingga ratusan tahun. Membawa tumbler isi ulang mengurangi beban sampah planet bumi."
+        }
+      ],
+      4: [
+        {
+          q: "Saat menghadapi masalah pelajaran yang rumit, memecahnya menjadi bagian-bagian kecil membuat masalah lebih mudah diselesaikan (Dekomposisi).",
+          a: true,
+          cat: "Berpikir Komputasional",
+          exp: "<b>Deep Learning:</b> Dekomposisi adalah prinsip Computational Thinking. Membagi tantangan besar menjadi langkah kecil memudahkan kita menemukan solusi."
+        },
+        {
+          q: "Algoritma adalah urutan langkah-langkah acak tanpa aturan yang jelas untuk menyelesaikan suatu tugas.",
+          a: false,
+          cat: "Logika & Algoritma",
+          exp: "<b>Deep Learning:</b> Algoritma harus terstruktur, logis, dan sistematis. Berpikir terstruktur membantu kita mengambil keputusan secara cerdas."
+        }
+      ],
+      5: [
+        {
+          q: "Jika menerima kabar mengejutkan di media sosial, kita wajib memeriksa kebenarannya sebelum membagikannya ke orang lain.",
+          a: true,
+          cat: "Literasi Digital",
+          exp: "<b>Deep Learning:</b> Saring sebelum sharing mencegah penyebaran hoaks. Menjadi warga digital beretika melindungi masyarakat dari informasi bohong."
+        },
+        {
+          q: "Membagikan kata sandi (password) akun belajar kita kepada teman dekat adalah hal yang aman dilakukan.",
+          a: false,
+          cat: "Keamanan Digital",
+          exp: "<b>Deep Learning:</b> Password adalah privasi pribadi. Menjaga kerahasiaannya melindungi identitas dan data pribadi dari risiko penyalahgunaan."
+        }
+      ],
+      6: [
+        {
+          q: "Artificial Intelligence (Kecerdasan Buatan) belajar dari data yang manusia berikan, sehingga jika datanya keliru, hasil AI juga bisa salah.",
+          a: true,
+          cat: "Teknologi & AI",
+          exp: "<b>Deep Learning:</b> AI hanyalah alat bantu. Berpikir kritis manusia tetap memegang kendali utama untuk memverifikasi dan memanfaatkan teknologi secara bijak."
+        },
+        {
+          q: "Bencana banjir di daerah perkotaan murni disebabkan oleh faktor alam tanpa ada campur tangan kebiasaan manusia.",
+          a: false,
+          cat: "Solusi Bencana",
+          exp: "<b>Deep Learning:</b> Penutupan lahan hijau dan pembuangan sampah ke saluran air menjadi faktor utama penyebab banjir. Perilaku manusia berdampak langsung pada lingkungan."
+        }
+      ]
+    };
+
+    // ===================================================
+    // STATE APLIKASI GAME
+    // ===================================================
+    let selectedGrade = 1;
+    let currentQuestions = [];
+    let currentQIndex = 0;
+    let score = 0;
+    let timerInterval = null;
+    let timeLeft = 10; // detik per soal
+    let isWebcamActive = false;
+    let videoStream = null;
+    let prevFrameData = null;
+    let motionCheckInterval = null;
+    let isAnswerLocked = false;
+
+    // Web Audio API Synthesizer (Tanpa File MP3 Eksternal)
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioCtx();
+    }
+
+    function playSound(type) {
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'correct') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+          osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3); // A5
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.3);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
+          osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 0.4); // A2
+          gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.4);
+        } else if (type === 'click') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.05);
+        }
+      } catch (e) { console.log("Audio not allowed yet"); }
+    }
+
+    // ===================================================
+    // SCRIPT UTAMA & NAVIGASI SPA
+    // ===================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      renderGradeSelector();
+      loadHighScore();
+      checkDarkModePreference();
+    });
+
+    function showScreen(screenName) {
+      playSound('click');
+      document.getElementById('screenHome').classList.add('hidden');
+      document.getElementById('screenGame').classList.add('hidden');
+      document.getElementById('screenResult').classList.add('hidden');
+
+      if (screenName === 'home') {
+        stopCamera();
+        document.getElementById('screenHome').classList.remove('hidden');
+      } else if (screenName === 'game') {
+        document.getElementById('screenGame').classList.remove('hidden');
+      } else if (screenName === 'result') {
+        stopCamera();
+        document.getElementById('screenResult').classList.remove('hidden');
+      }
+    }
+
+    function renderGradeSelector() {
+      const grid = document.getElementById('classGrid');
+      grid.innerHTML = '';
+      for (let i = 1; i <= 6; i++) {
+        const btn = document.createElement('button');
+        btn.onclick = () => selectGrade(i);
+        btn.id = `gradeBtn-${i}`;
+        btn.className = `p-4 rounded-2xl font-black text-lg border-2 transition flex flex-col items-center justify-center gap-1 ${
+          selectedGrade === i 
+            ? 'bg-brand-purple text-white border-brand-purple shadow-lg scale-105' 
+            : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600 hover:border-brand-purple'
+        }`;
+        btn.innerHTML = `<span class="text-xs opacity-75">KELAS</span><span class="text-2xl">${i}</span>`;
+        grid.appendChild(btn);
+      }
+    }
+
+    function selectGrade(g) {
+      playSound('click');
+      selectedGrade = g;
+      renderGradeSelector();
+    }
+
+    // ===================================================
+    // GAME ENGINE & TIMER
+    // ===================================================
+    function startGame() {
+      const nameInput = document.getElementById('playerNameInput').value.trim();
+      if (!nameInput) {
+        alert("Silakan isi nama kamu terlebih dahulu!");
+        return;
+      }
+
+      currentQuestions = [...(QUESTION_BANK[selectedGrade] || QUESTION_BANK[1])];
+      currentQIndex = 0;
+      score = 0;
+
+      document.getElementById('gameGradeBadge').innerText = `Kelas ${selectedGrade}`;
+      document.getElementById('gameScore').innerText = '0';
+
+      showScreen('game');
+
+      if (document.getElementById('cameraToggle').checked) {
+        startCamera();
+      } else {
+        document.getElementById('cameraOffNotice').classList.remove('hidden');
+      }
+
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      isAnswerLocked = false;
+      const q = currentQuestions[currentQIndex];
+
+      document.getElementById('questionProgress').innerText = `Soal ${currentQIndex + 1} / ${currentQuestions.length}`;
+      document.getElementById('questionCategory').innerText = q.cat;
+      document.getElementById('questionText').innerText = q.q;
+
+      // Reset Bar Sensor
+      document.getElementById('barLeft').style.width = '0%';
+      document.getElementById('barRight').style.width = '0%';
+
+      startTimer();
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timeLeft = 10;
+      const timerBar = document.getElementById('timerBar');
+      timerBar.style.width = '100%';
+
+      timerInterval = setInterval(() => {
+        timeLeft -= 0.1;
+        const pct = Math.max(0, (timeLeft / 10) * 100);
+        timerBar.style.width = `${pct}%`;
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          // Waktu Habis -> Dianggap salah
+          submitAnswer(null);
+        }
+      }, 100);
+    }
+
+    function submitAnswer(userChoice) {
+      if (isAnswerLocked) return;
+      isAnswerLocked = true;
+      clearInterval(timerInterval);
+
+      const q = currentQuestions[currentQIndex];
+      const isCorrect = (userChoice === q.a);
+
+      const modal = document.getElementById('explanationModal');
+      const badge = document.getElementById('evalBadge');
+      const content = document.getElementById('explanationContent');
+
+      if (isCorrect) {
+        playSound('correct');
+        score += 20;
+        document.getElementById('gameScore').innerText = score;
+        badge.className = "inline-block px-4 py-1 rounded-full text-xs font-black uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300";
+        badge.innerText = "JAWABAN TEPAT! 🎉";
+      } else {
+        playSound('wrong');
+        badge.className = "inline-block px-4 py-1 rounded-full text-xs font-black uppercase bg-rose-100 text-rose-700 dark:bg-rose-900/60 dark:text-rose-300";
+        badge.innerText = userChoice === null ? "WAKTU HABIS! ⏰" : "JAWABAN KURANG TEPAT 💡";
+      }
+
+      content.innerHTML = q.exp;
+      modal.classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      playSound('click');
+      document.getElementById('explanationModal').classList.add('hidden');
+      currentQIndex++;
+
+      if (currentQIndex < currentQuestions.length) {
+        loadQuestion();
+      } else {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      stopCamera();
+      showScreen('result');
+
+      const maxScore = currentQuestions.length * 20;
+      const accuracy = Math.round((score / maxScore) * 100) || 0;
+
+      document.getElementById('finalScore').innerText = score;
+      document.getElementById('finalAccuracy').innerText = `${accuracy}%`;
+
+      // Simpan Highscore
+      const currentHigh = parseInt(localStorage.getItem('kesilir_highscore') || '0');
+      if (score > currentHigh) {
+        localStorage.setItem('kesilir_highscore', score);
+        loadHighScore();
+      }
+
+      // Isi Sertifikat
+      const name = document.getElementById('playerNameInput').value.trim() || 'Siswa Hebat';
+      document.getElementById('certPlayerName').innerText = name;
+      document.getElementById('certGrade').innerText = `Kelas ${selectedGrade}`;
+      document.getElementById('certDate').innerText = new Date().toLocaleDateString('id-ID', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      });
+
+      // Selebrasi Kembang Api
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
+
+    function quitGame() {
+      if (confirm("Apakah kamu yakin ingin keluar dari permainan?")) {
+        showScreen('home');
+      }
+    }
+
+    // ===================================================
+    // KAMERA REAL-TIME MOTION DETECTION
+    // ===================================================
+    async function startCamera() {
+      const video = document.getElementById('webcam');
+      const notice = document.getElementById('cameraOffNotice');
+      try {
+        videoStream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240 } });
+        video.srcObject = videoStream;
+        notice.classList.add('hidden');
+        isWebcamActive = true;
+        startMotionDetection();
+      } catch (err) {
+        console.warn("Camera access denied or unavaliable:", err);
+        notice.classList.remove('hidden');
+        isWebcamActive = false;
+      }
+    }
+
+    function stopCamera() {
+      if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+        videoStream = null;
+      }
+      isWebcamActive = false;
+      clearInterval(motionCheckInterval);
+    }
+
+    function startMotionDetection() {
+      const video = document.getElementById('webcam');
+      const canvas = document.getElementById('motionCanvas');
+      const ctx = canvas.getContext('2d');
+
+      canvas.width = 160;
+      canvas.height = 120;
+
+      let leftCount = 0;
+      let rightCount = 0;
+
+      motionCheckInterval = setInterval(() => {
+        if (!isWebcamActive || isAnswerLocked || video.paused || video.ended) return;
+
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const currentFrame = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+        if (prevFrameData) {
+          let leftMotion = 0;
+          let rightMotion = 0;
+          const halfWidth = canvas.width / 2;
+
+          for (let y = 0; y < canvas.height; y += 4) {
+            for (let x = 0; x < canvas.width; x += 4) {
+              const i = (y * canvas.width + x) * 4;
+              const diff = Math.abs(currentFrame.data[i] - prevFrameData.data[i]);
+
+              if (diff > 30) {
+                // Kamera di-mirror: Kiri video = Gerak Kanan Pemain
+                if (x < halfWidth) leftMotion++;
+                else rightMotion++;
+              }
+            }
+          }
+
+          // Visual Meter
+          const leftPct = Math.min(100, leftMotion * 3);
+          const rightPct = Math.min(100, rightMotion * 3);
+          document.getElementById('barLeft').style.width = `${leftPct}%`;
+          document.getElementById('barRight').style.width = `${rightPct}%`;
+
+          // Threshold Trigger Jawaban
+          if (leftPct > 60) leftCount++; else leftCount = 0;
+          if (rightPct > 60) rightCount++; else rightCount = 0;
+
+          if (leftCount > 3) {
+            submitAnswer(true);
+            leftCount = 0;
+          } else if (rightCount > 3) {
+            submitAnswer(false);
+            rightCount = 0;
+          }
+        }
+
+        prevFrameData = currentFrame;
+      }, 150);
+    }
+
+    // ===================================================
+    // FITUR UTILITY & SERTIFIKAT
+    // ===================================================
+    function loadHighScore() {
+      const score = localStorage.getItem('kesilir_highscore') || '0';
+      document.getElementById('navHighScore').innerText = score;
+    }
+
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      localStorage.setItem('kesilir_theme', isDark ? 'dark' : 'light');
+      document.getElementById('themeIcon').className = isDark ? 'fa-solid fa-sun text-lg' : 'fa-solid fa-moon text-lg';
+    }
+
+    function checkDarkModePreference() {
+      if (localStorage.getItem('kesilir_theme') === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.getElementById('themeIcon').className = 'fa-solid fa-sun text-lg';
+      }
+    }
+
+    function printCertificate() {
+      window.print();
+    }
+  </script>
+</body>
+</html>
