@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Game Benar Salah - SDN Kesilir 02</title>
-  <meta name="description" content="Game Edukasi Benar atau Salah Berbasis Kamera dengan Kurikulum Deep Learning untuk SD Kelas 1-6 SDN KESILIR 02">
+  <meta name="description" content="Game Edukasi Benar atau Salah Berbasis Kamera dengan Kurikulum Merdeka Deep Learning untuk SD Kelas 1-6 SDN KESILIR 02">
   
   <!-- Tailwind CSS & FontAwesome CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Canvas Confetti untuk Efek Kemenangan -->
+  <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   
   <script>
@@ -23,8 +23,7 @@
               pink: '#FD79A8',
               yellow: '#FDCB6E',
               green: '#00B894',
-              red: '#D63031',
-              dark: '#0F172A'
+              red: '#D63031'
             }
           },
           fontFamily: {
@@ -58,18 +57,15 @@
         </div>
         <div>
           <h1 class="font-extrabold text-lg md:text-xl text-brand-purple dark:text-purple-400 leading-tight">BENAR / SALAH</h1>
-          <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">SDN KESILIR 02</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold">SDN KESILIR 02 • KURMER</p>
         </div>
       </div>
 
       <div class="flex items-center gap-3">
-        <!-- Highscore Badge -->
-        <div class="hidden sm:flex items-center gap-2 bg-yellow-100 dark:bg-slate-700 px-3 py-1.5 rounded-full border border-yellow-300 dark:border-yellow-600 text-xs font-bold text-amber-700 dark:text-yellow-400">
-          <i class="fa-solid fa-trophy text-yellow-500">
-          </i> Rekor: <span id="navHighScore">0</span>
+        <div class="hidden sm:flex items-center gap-2 bg-amber-100 dark:bg-slate-700 px-3 py-1.5 rounded-full border border-amber-300 dark:border-amber-600 text-xs font-bold text-amber-700 dark:text-amber-400">
+          <i class="fa-solid fa-trophy text-amber-500"></i> Rekor: <span id="navHighScore">0</span>
         </div>
 
-        <!-- Dark Mode Toggle -->
         <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-yellow-400 hover:scale-105 transition">
           <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
         </button>
@@ -77,45 +73,51 @@
     </div>
   </header>
 
-  <!-- CONTAINER UTAMA PERMAINAN -->
+  <!-- CONTAINER UTAMA -->
   <main class="flex-grow max-w-5xl w-full mx-auto p-4 flex flex-col justify-center">
 
-    <!-- 1. LAYAR BERANDA & PILIH KELAS -->
-    <section id="screenHome" class="space-y-8 py-6">
-      <div class="text-center space-y-4 max-w-2xl mx-auto">
-        <span class="inline-block px-4 py-1.5 bg-purple-100 dark:bg-purple-900/50 text-brand-purple dark:text-purple-300 font-bold text-xs md:text-sm rounded-full border border-purple-200 dark:border-purple-700">
-          ✨ Deep Learning Interactive Game
+    <!-- 1. BERANDA & PENETAPAN KELAS + MAPEL -->
+    <section id="screenHome" class="space-y-6 py-4">
+      <div class="text-center space-y-2 max-w-2xl mx-auto">
+        <span class="inline-block px-4 py-1 bg-purple-100 dark:bg-purple-900/50 text-brand-purple dark:text-purple-300 font-bold text-xs rounded-full border border-purple-200 dark:border-purple-700">
+          ✨ Deep Learning Kurikulum Merdeka
         </span>
-        <h2 class="text-3xl md:text-5xl font-black text-slate-900 dark:text-white leading-tight">
-          Gerakkan Tanganmu, Jawab Soalnya! 🚀
+        <h2 class="text-2xl md:text-4xl font-black text-slate-900 dark:text-white leading-tight">
+          Pilih Kelas & Mata Pelajaran! 🚀
         </h2>
-        <p class="text-slate-600 dark:text-slate-300 text-sm md:text-base">
-          Gunakan kamera HP / Laptop untuk memilih jawaban <b class="text-emerald-500">BENAR (Kiri)</b> atau <b class="text-rose-500">SALAH (Kanan)</b>, atau ketuk tombol langsung!
+        <p class="text-slate-600 dark:text-slate-300 text-xs md:text-sm">
+          Gerakkan tangan di depan kamera atau tekan tombol langsung untuk menjawab dalam <b class="text-rose-500">10 detik</b>!
         </p>
       </div>
 
-      <!-- KARTU PILIH KELAS -->
-      <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-xl border border-purple-100 dark:border-slate-700 space-y-4">
-        <h3 class="text-center font-extrabold text-slate-700 dark:text-slate-200 text-lg flex items-center justify-center gap-2">
-          <i class="fa-solid fa-graduation-cap text-brand-purple"></i> Pilih Kelas Kamu
+      <!-- STEP 1: PILIH KELAS -->
+      <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl shadow-lg border border-purple-100 dark:border-slate-700 space-y-3">
+        <h3 class="font-extrabold text-slate-700 dark:text-slate-200 text-sm flex items-center gap-2">
+          <i class="fa-solid fa-graduation-cap text-brand-purple"></i> Langkah 1: Pilih Kelas
         </h3>
-        <div class="grid grid-cols-2 md:grid-cols-6 gap-3" id="classGrid">
-          <!-- Tombol kelas di-generate dinamis oleh JS -->
-        </div>
+        <div class="grid grid-cols-3 md:grid-cols-6 gap-2.5" id="classGrid"></div>
       </div>
 
-      <!-- PENGATURAN MODE KAMERA & NAMA -->
-      <div class="bg-slate-200/60 dark:bg-slate-800/60 p-5 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+      <!-- STEP 2: PILIH MAPEL -->
+      <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl shadow-lg border border-purple-100 dark:border-slate-700 space-y-3">
+        <h3 class="font-extrabold text-slate-700 dark:text-slate-200 text-sm flex items-center gap-2">
+          <i class="fa-solid fa-book-open text-brand-purple"></i> Langkah 2: Pilih Mata Pelajaran
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2.5" id="subjectGrid"></div>
+      </div>
+
+      <!-- STEP 3: DATA PEMAIN & KAMERA -->
+      <div class="bg-slate-200/60 dark:bg-slate-800/60 p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-3">
         <div class="w-full md:w-1/2 space-y-1">
-          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase">Nama Pemain</label>
-          <input type="text" id="playerNameInput" placeholder="Masukkan nama kamu..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 font-semibold focus:ring-2 focus:ring-brand-purple outline-none">
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase">Nama Siswa</label>
+          <input type="text" id="playerNameInput" placeholder="Ketik nama kamu di sini..." class="w-full px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 font-semibold focus:ring-2 focus:ring-brand-purple outline-none text-sm">
         </div>
-        <div class="w-full md:w-1/2 flex items-center justify-between bg-white dark:bg-slate-700 p-3 rounded-xl border border-slate-300 dark:border-slate-600">
+        <div class="w-full md:w-1/2 flex items-center justify-between bg-white dark:bg-slate-700 p-2.5 rounded-xl border border-slate-300 dark:border-slate-600">
           <div class="flex items-center gap-2">
-            <i class="fa-solid fa-camera text-brand-purple text-lg"></i>
+            <i class="fa-solid fa-camera text-brand-purple text-base"></i>
             <div>
-              <div class="font-bold text-xs">Sensor Kamera</div>
-              <div class="text-[10px] text-slate-500 dark:text-slate-300">Gunakan deteksi gerak tangan</div>
+              <div class="font-bold text-xs">Sensor Gerak Kamera</div>
+              <div class="text-[10px] text-slate-500 dark:text-slate-300">Aktifkan webcam untuk deteksi gerak</div>
             </div>
           </div>
           <input type="checkbox" id="cameraToggle" checked class="w-5 h-5 accent-brand-purple cursor-pointer">
@@ -123,171 +125,174 @@
       </div>
 
       <!-- TOMBOL MULAI -->
-      <div class="text-center">
-        <button onclick="startGame()" class="pulse-glow w-full md:w-auto px-10 py-4 bg-gradient-to-r from-brand-purple to-brand-pink text-white font-extrabold text-xl rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition flex items-center justify-center gap-3 mx-auto">
-          <i class="fa-solid fa-play"></i> MULAI BERMAIN NOW
+      <div class="text-center pt-2">
+        <button onclick="startGame()" class="pulse-glow w-full md:w-auto px-10 py-3.5 bg-gradient-to-r from-brand-purple to-brand-pink text-white font-extrabold text-lg rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition flex items-center justify-center gap-3 mx-auto">
+          <i class="fa-solid fa-play"></i> MULAI GAME SEKARANG
         </button>
       </div>
     </section>
 
 
-    <!-- 2. LAYAR ARENA GAME -->
-    <section id="screenGame" class="hidden space-y-4">
+    <!-- 2. ARENA PERMAINAN -->
+    <section id="screenGame" class="hidden space-y-3">
       <!-- HUD Top Bar -->
-      <div class="flex items-center justify-between bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700">
-        <div class="flex items-center gap-3">
-          <span id="gameGradeBadge" class="bg-purple-100 text-brand-purple dark:bg-purple-900/60 dark:text-purple-300 text-xs font-black px-3 py-1 rounded-lg">Kelas 1</span>
-          <span id="questionProgress" class="text-xs font-bold text-slate-500 dark:text-slate-400">Soal 1 / 5</span>
+      <div class="flex items-center justify-between bg-white dark:bg-slate-800 p-3.5 rounded-2xl shadow border border-slate-200 dark:border-slate-700">
+        <div class="flex items-center gap-2">
+          <span id="gameGradeBadge" class="bg-purple-100 text-brand-purple dark:bg-purple-900/60 dark:text-purple-300 text-xs font-black px-2.5 py-1 rounded-lg">Kelas 1</span>
+          <span id="gameSubjectBadge" class="bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 text-xs font-bold px-2.5 py-1 rounded-lg">Pancasila</span>
+          <span id="questionProgress" class="text-xs font-bold text-slate-500 dark:text-slate-400">1 / 3</span>
         </div>
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
           <div class="text-right">
-            <div class="text-[10px] uppercase font-bold text-slate-400">Skor Kamu</div>
-            <div id="gameScore" class="font-black text-xl text-emerald-500">0</div>
+            <div class="text-[9px] uppercase font-bold text-slate-400">Skor</div>
+            <div id="gameScore" class="font-black text-lg text-emerald-500">0</div>
           </div>
-          <button onclick="quitGame()" class="text-xs bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 px-3 py-1.5 rounded-lg font-bold hover:bg-rose-200">
+          <button onclick="quitGame()" class="text-xs bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 px-2.5 py-1 rounded-lg font-bold hover:bg-rose-200">
             Keluar
           </button>
         </div>
       </div>
 
-      <!-- TIMER BAR -->
-      <div class="w-full bg-slate-200 dark:bg-slate-700 h-3 rounded-full overflow-hidden">
-        <div id="timerBar" class="bg-gradient-to-r from-emerald-400 to-brand-purple h-full w-full transition-all duration-100 linear"></div>
+      <!-- TIMER 10 DETIK VISUAL BAR & INDIKATOR -->
+      <div class="space-y-1">
+        <div class="flex justify-between items-center text-xs font-bold px-1">
+          <span class="text-slate-500"><i class="fa-regular fa-clock"></i> Sisa Waktu:</span>
+          <span id="timerText" class="text-rose-500 font-black text-sm">10.0 Detik</span>
+        </div>
+        <div class="w-full bg-slate-200 dark:bg-slate-700 h-3.5 rounded-full overflow-hidden p-0.5 border border-slate-300 dark:border-slate-600">
+          <div id="timerBar" class="bg-gradient-to-r from-emerald-400 via-yellow-400 to-rose-500 h-full w-full rounded-full transition-all duration-100 linear"></div>
+        </div>
       </div>
 
-      <!-- KARTU SOAL (DEEP LEARNING CONTEXT) -->
-      <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-3xl shadow-xl border-2 border-purple-200 dark:border-slate-700 text-center space-y-4 relative overflow-hidden">
-        <div class="inline-block px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-yellow-300 text-xs font-extrabold rounded-md uppercase tracking-wider" id="questionCategory">
-          Refleksi &amp; Pemahaman
+      <!-- SOAL DEEP LEARNING -->
+      <div class="bg-white dark:bg-slate-800 p-5 md:p-6 rounded-3xl shadow-lg border-2 border-purple-200 dark:border-slate-700 text-center space-y-2">
+        <div class="inline-block px-3 py-0.5 bg-purple-100 dark:bg-purple-900/40 text-brand-purple dark:text-purple-300 text-[11px] font-extrabold rounded-md uppercase" id="questionCategory">
+          Refleksi & Pemahaman
         </div>
-        <h3 id="questionText" class="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-100 leading-snug min-h-[70px] flex items-center justify-center">
+        <h3 id="questionText" class="text-lg md:text-xl font-bold text-slate-800 dark:text-slate-100 leading-snug min-h-[60px] flex items-center justify-center">
           Memuat pertanyaan...
         </h3>
       </div>
 
-      <!-- AREA KAMERA & KONTROL AUKSI -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Kamera Motion Detection Box -->
-        <div id="cameraBox" class="relative bg-slate-900 rounded-2xl overflow-hidden shadow-lg border-2 border-slate-700 h-64 md:h-72 flex items-center justify-center">
+      <!-- ZONA INTERAKSI KAMERA & TOMBOL MANUAL -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <!-- Frame Kamera -->
+        <div id="cameraBox" class="relative bg-slate-900 rounded-2xl overflow-hidden shadow border-2 border-slate-700 h-56 md:h-64 flex items-center justify-center">
           <video id="webcam" class="w-full h-full object-cover mirror" playsinline autoplay muted></video>
           <canvas id="motionCanvas" class="hidden"></canvas>
           
-          <!-- Overlay Zona Benar / Salah pada Video -->
           <div id="cameraOverlay" class="absolute inset-0 grid grid-cols-2 pointer-events-none">
-            <div id="zoneLeft" class="border-r-2 border-dashed border-emerald-400/50 bg-emerald-500/10 flex flex-col items-center justify-center transition-all">
-              <span class="bg-emerald-500 text-white font-black px-3 py-1 rounded-full text-xs shadow">👈 BENAR</span>
-              <div id="meterLeft" class="w-16 bg-slate-700/80 h-2 rounded-full mt-2 overflow-hidden">
+            <div id="zoneLeft" class="border-r-2 border-dashed border-emerald-400/50 bg-emerald-500/10 flex flex-col items-center justify-center">
+              <span class="bg-emerald-500 text-white font-black px-2.5 py-0.5 rounded-full text-[11px] shadow">👈 BENAR</span>
+              <div class="w-14 bg-slate-700/80 h-1.5 rounded-full mt-2 overflow-hidden">
                 <div id="barLeft" class="bg-emerald-400 h-full w-0 transition-all"></div>
               </div>
             </div>
-            <div id="zoneRight" class="bg-rose-500/10 flex flex-col items-center justify-center transition-all">
-              <span class="bg-rose-500 text-white font-black px-3 py-1 rounded-full text-xs shadow">SALAH 👉</span>
-              <div id="meterRight" class="w-16 bg-slate-700/80 h-2 rounded-full mt-2 overflow-hidden">
+            <div id="zoneRight" class="bg-rose-500/10 flex flex-col items-center justify-center">
+              <span class="bg-rose-500 text-white font-black px-2.5 py-0.5 rounded-full text-[11px] shadow">SALAH 👉</span>
+              <div class="w-14 bg-slate-700/80 h-1.5 rounded-full mt-2 overflow-hidden">
                 <div id="barRight" class="bg-rose-400 h-full w-0 transition-all"></div>
               </div>
             </div>
           </div>
 
-          <!-- Status Kamera Off Fallback -->
           <div id="cameraOffNotice" class="hidden absolute inset-0 bg-slate-800/90 text-slate-300 flex flex-col items-center justify-center p-4 text-center">
-            <i class="fa-solid fa-video-slash text-3xl mb-2 text-rose-400"></i>
+            <i class="fa-solid fa-video-slash text-2xl mb-1 text-rose-400"></i>
             <p class="text-xs font-bold">Kamera Nonaktif / Tidak Diizinkan</p>
-            <p class="text-[10px] text-slate-400">Gunakan tombol Benar / Salah di bawah untuk menjawab!</p>
+            <p class="text-[10px] text-slate-400">Sentuh tombol Benar / Salah langsung di bawah!</p>
           </div>
         </div>
 
-        <!-- TOMBOL PILIHAN MANUAL (UNTUK MOBILE / NON-KAMERA) -->
-        <div class="grid grid-cols-2 gap-4 h-64 md:h-72">
-          <button onclick="submitAnswer(true)" class="group relative bg-gradient-to-b from-emerald-400 to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 text-white rounded-2xl shadow-xl flex flex-col items-center justify-center gap-2 p-4 transition transform active:scale-95 border-b-8 border-emerald-800">
-            <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-3xl group-hover:scale-110 transition">
+        <!-- Tombol Layar Sentuh -->
+        <div class="grid grid-cols-2 gap-3 h-56 md:h-64">
+          <button onclick="submitAnswer(true)" class="group bg-gradient-to-b from-emerald-400 to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 text-white rounded-2xl shadow-lg flex flex-col items-center justify-center gap-1.5 p-3 transition transform active:scale-95 border-b-4 border-emerald-800">
+            <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-2xl group-hover:scale-110 transition">
               👍
             </div>
-            <span class="font-black text-2xl tracking-wider">BENAR</span>
-            <span class="text-[10px] opacity-80 uppercase font-semibold">Sentuh / Lambaikan Kiri</span>
+            <span class="font-black text-xl tracking-wider">BENAR</span>
+            <span class="text-[9px] opacity-80 uppercase font-semibold">Sentuh / Lambaikan Kiri</span>
           </button>
 
-          <button onclick="submitAnswer(false)" class="group relative bg-gradient-to-b from-rose-400 to-rose-600 hover:from-rose-500 hover:to-rose-700 text-white rounded-2xl shadow-xl flex flex-col items-center justify-center gap-2 p-4 transition transform active:scale-95 border-b-8 border-rose-800">
-            <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-3xl group-hover:scale-110 transition">
+          <button onclick="submitAnswer(false)" class="group bg-gradient-to-b from-rose-400 to-rose-600 hover:from-rose-500 hover:to-rose-700 text-white rounded-2xl shadow-lg flex flex-col items-center justify-center gap-1.5 p-3 transition transform active:scale-95 border-b-4 border-rose-800">
+            <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-2xl group-hover:scale-110 transition">
               👎
             </div>
-            <span class="font-black text-2xl tracking-wider">SALAH</span>
-            <span class="text-[10px] opacity-80 uppercase font-semibold">Sentuh / Lambaikan Kanan</span>
+            <span class="font-black text-xl tracking-wider">SALAH</span>
+            <span class="text-[9px] opacity-80 uppercase font-semibold">Sentuh / Lambaikan Kanan</span>
           </button>
         </div>
       </div>
     </section>
 
 
-    <!-- 3. MODAL DEEP LEARNING EXPLANATION (MUNCUL TIAP SELESAI SOAL) -->
+    <!-- 3. MODAL DEEP LEARNING REFLEKSI -->
     <div id="explanationModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-      <div class="bg-white dark:bg-slate-800 max-w-lg w-full rounded-3xl p-6 shadow-2xl border-2 border-purple-300 dark:border-slate-600 space-y-4 animate-bounce-in">
-        <div class="text-center space-y-1">
-          <div id="evalBadge" class="inline-block px-4 py-1 rounded-full text-xs font-black uppercase">
+      <div class="bg-white dark:bg-slate-800 max-w-lg w-full rounded-3xl p-5 shadow-2xl border-2 border-purple-300 dark:border-slate-600 space-y-3">
+        <div class="text-center space-y-0.5">
+          <div id="evalBadge" class="inline-block px-3 py-0.5 rounded-full text-xs font-black uppercase">
             JAWABAN TEPAT! 🎉
           </div>
-          <h4 class="text-xl font-black text-slate-800 dark:text-white">Refleksi Deep Learning</h4>
+          <h4 class="text-lg font-black text-slate-800 dark:text-white">Refleksi Deep Learning Kurmer</h4>
         </div>
 
-        <div class="bg-slate-100 dark:bg-slate-700/60 p-4 rounded-2xl text-slate-700 dark:text-slate-200 text-sm leading-relaxed border-l-4 border-brand-purple" id="explanationContent">
-          Penjelasan pembelajaran mendalam akan muncul di sini...
+        <div class="bg-slate-100 dark:bg-slate-700/60 p-3.5 rounded-2xl text-slate-700 dark:text-slate-200 text-xs md:text-sm leading-relaxed border-l-4 border-brand-purple" id="explanationContent">
+          Penjelasan pembelajaran mendalam...
         </div>
 
-        <button onclick="nextQuestion()" class="w-full py-3.5 bg-brand-purple text-white font-extrabold text-base rounded-xl shadow-lg hover:bg-purple-700 transition flex items-center justify-center gap-2">
+        <button onclick="nextQuestion()" class="w-full py-3 bg-brand-purple text-white font-extrabold text-sm rounded-xl shadow-lg hover:bg-purple-700 transition flex items-center justify-center gap-2">
           Lanjut Soal Berikutnya <i class="fa-solid fa-arrow-right"></i>
         </button>
       </div>
     </div>
 
 
-    <!-- 4. LAYAR SKOR & SERTIFIKAT KELULUSAN -->
-    <section id="screenResult" class="hidden space-y-6 text-center py-6">
-      <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-2xl border border-purple-100 dark:border-slate-700 space-y-6 max-w-2xl mx-auto">
-        <div class="space-y-2">
-          <span class="text-5xl">🏆</span>
-          <h2 class="text-3xl font-black text-slate-900 dark:text-white">Permainan Selesai!</h2>
-          <p class="text-slate-500 dark:text-slate-400 text-sm">Berikut adalah pencapaian belajar kamu hari ini:</p>
+    <!-- 4. HASIL & SERTIFIKAT -->
+    <section id="screenResult" class="hidden space-y-4 text-center py-4">
+      <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-xl border border-purple-100 dark:border-slate-700 space-y-5 max-w-xl mx-auto">
+        <div class="space-y-1">
+          <span class="text-4xl">🏆</span>
+          <h2 class="text-2xl font-black text-slate-900 dark:text-white">Selesai &amp; Luar Biasa!</h2>
+          <p class="text-slate-500 dark:text-slate-400 text-xs">Pencapaian belajar Kurikulum Merdeka hari ini:</p>
         </div>
 
-        <!-- Tampilan Skor Akhir -->
-        <div class="grid grid-cols-2 gap-4 bg-purple-50 dark:bg-slate-700/50 p-4 rounded-2xl">
+        <div class="grid grid-cols-2 gap-3 bg-purple-50 dark:bg-slate-700/50 p-3 rounded-2xl">
           <div>
-            <div class="text-xs font-bold text-slate-400 uppercase">Skor Akhir</div>
-            <div id="finalScore" class="text-4xl font-black text-brand-purple dark:text-purple-400">100</div>
+            <div class="text-[10px] font-bold text-slate-400 uppercase">Skor Total</div>
+            <div id="finalScore" class="text-3xl font-black text-brand-purple dark:text-purple-400">100</div>
           </div>
           <div>
-            <div class="text-xs font-bold text-slate-400 uppercase">Akurasi</div>
-            <div id="finalAccuracy" class="text-4xl font-black text-emerald-500">100%</div>
+            <div class="text-[10px] font-bold text-slate-400 uppercase">Akurasi Soal</div>
+            <div id="finalAccuracy" class="text-3xl font-black text-emerald-500">100%</div>
           </div>
         </div>
 
-        <!-- SERTIFIKAT SIAP CETAK -->
-        <div id="certificateCard" class="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-slate-700 dark:to-slate-800 p-6 rounded-2xl border-4 border-double border-amber-300 dark:border-amber-600 text-left space-y-3 relative overflow-hidden">
+        <!-- Sertifikat Digital -->
+        <div id="certificateCard" class="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-slate-700 dark:to-slate-800 p-5 rounded-2xl border-4 border-double border-amber-300 dark:border-amber-600 text-left space-y-2 relative">
           <div class="flex justify-between items-start">
             <div>
-              <div class="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-widest">Sertifikat Kelulusan</div>
-              <h3 class="font-extrabold text-lg text-slate-800 dark:text-amber-200">SDN KESILIR 02</h3>
+              <div class="text-[9px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-widest">Sertifikat Kelulusan Modul</div>
+              <h3 class="font-extrabold text-base text-slate-800 dark:text-amber-200">SDN KESILIR 02</h3>
             </div>
             <span class="text-2xl">🏅</span>
           </div>
 
-          <p class="text-xs text-slate-600 dark:text-slate-300">Diberikan kepada siswa berprestasi:</p>
-          <div id="certPlayerName" class="text-xl font-black text-brand-purple dark:text-purple-300 border-b-2 border-amber-300 dark:border-amber-600 pb-1">
+          <p class="text-[11px] text-slate-600 dark:text-slate-300">Diberikan kepada siswa berprestasi:</p>
+          <div id="certPlayerName" class="text-lg font-black text-brand-purple dark:text-purple-300 border-b-2 border-amber-300 dark:border-amber-600 pb-0.5">
             Siswa Hebat
           </div>
-          <p class="text-xs text-slate-600 dark:text-slate-300">
-            Telah menyelesaikan kuis interaktif <b id="certGrade">Kelas 1</b> berorientasi <i>Deep Learning &amp; Berpikir Kritis</i>.
+          <p class="text-[11px] text-slate-600 dark:text-slate-300">
+            Telah menyelesaikan evaluasi Deep Learning <b id="certSubject">Pancasila</b> (<b id="certGrade">Kelas 1</b>) dengan pemahaman kritis yang baik.
           </p>
-          <div class="text-[10px] text-slate-400 text-right pt-2">
-            Verifikasi Digital SDN Kesilir 02 • <span id="certDate"></span>
+          <div class="text-[9px] text-slate-400 text-right pt-1">
+            SDN Kesilir 02 • <span id="certDate"></span>
           </div>
         </div>
 
-        <!-- TOMBOL AKSI HASIL -->
-        <div class="flex flex-col sm:flex-row gap-3">
-          <button onclick="printCertificate()" class="flex-1 py-3 bg-amber-500 text-white font-bold rounded-xl shadow hover:bg-amber-600 transition flex items-center justify-center gap-2">
-            <i class="fa-solid fa-print"></i> Cetak / Simpan Sertifikat
+        <div class="flex flex-col sm:flex-row gap-2.5">
+          <button onclick="window.print()" class="flex-1 py-2.5 bg-amber-500 text-white font-bold rounded-xl shadow hover:bg-amber-600 transition text-xs flex items-center justify-center gap-2">
+            <i class="fa-solid fa-print"></i> Cetak / Simpan PDF
           </button>
-          <button onclick="showScreen('home')" class="flex-1 py-3 bg-brand-purple text-white font-bold rounded-xl shadow hover:bg-purple-700 transition flex items-center justify-center gap-2">
+          <button onclick="showScreen('home')" class="flex-1 py-2.5 bg-brand-purple text-white font-bold rounded-xl shadow hover:bg-purple-700 transition text-xs flex items-center justify-center gap-2">
             <i class="fa-solid fa-rotate-right"></i> Main Lagi
           </button>
         </div>
@@ -296,131 +301,134 @@
 
   </main>
 
-  <!-- FOOTER -->
-  <footer class="mt-auto py-4 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 text-center text-xs text-slate-500 dark:text-slate-400">
-    &copy; 2026 <b>SDN KESILIR 02</b> • Game Benar Salah Edukatif
+  <footer class="mt-auto py-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 text-center text-xs text-slate-500 dark:text-slate-400">
+    &copy; 2026 <b>SDN KESILIR 02</b> • Game Edukasi Deep Learning Kurmer
   </footer>
 
-  <!-- SCRIPT LOGIKA GAME COMPLETE -->
+  <!-- SCRIPT KELAS, MAPEL, SOAL & SENSOR -->
   <script>
-    // ===================================================
-    // DATABASE SOAL DEEP LEARNING (KELAS 1 - KELAS 6)
-    // ===================================================
-    const QUESTION_BANK = {
-      1: [
-        {
-          q: "Saat melihat sampah plastik berserakan di halaman sekolah, membiarkannya adalah tindakan yang benar karena bukan kita yang membuangnya.",
-          a: false,
-          cat: "Kepedulian Lingkungan",
-          exp: "<b>Deep Learning:</b> Menjaga kebersihan sekolah adalah tanggung jawab bersama. Kepedulian lingkungan tumbuh dari aksi nyata tanpa menunggu perintah orang lain."
-        },
-        {
-          q: "Jika teman sekelas merasa sedih karena pensilnya patah, kita sebaiknya menghibur atau meminjamkan pensil cadangan.",
-          a: true,
-          cat: "Empati & Sosial",
-          exp: "<b>Deep Learning:</b> Empati menciptakan lingkungan belajar yang aman dan bahagia. Membantu teman melatih kecerdasan emosional kita sejak dini."
-        },
-        {
-          q: "Mencuci tangan dengan sabun sebelum makan menjaga tubuh kita dari kuman dan penyakit.",
-          a: true,
-          cat: "Kesehatan Diri",
-          exp: "<b>Deep Learning:</b> Kebiasaan hidup bersih adalah investasi jangka panjang untuk kesehatan tubuh dan pikiran agar siap belajar."
-        }
-      ],
-      2: [
-        {
-          q: "Mematikan keran air setelah selesai digunakan adalah bentuk tindakan menjaga kelestarian sumber daya alam.",
-          a: true,
-          cat: "Konservasi Alam",
-          exp: "<b>Deep Learning:</b> Air bersih adalah sumber daya terbatas. Menghemat air mengajarkan kita untuk bertanggung jawab atas masa depan bumi."
-        },
-        {
-          q: "Bergotong royong membersihkan kelas membuat pekerjaan terasa lebih berat dan menghabiskan waktu.",
-          a: false,
-          cat: "Gotong Royong",
-          exp: "<b>Deep Learning:</b> Gotong royong membagi beban kerja sehingga terasa lebih ringan, mempercepat penyelesaian tugas, dan mempererat kebersamaan."
-        }
-      ],
-      3: [
-        {
-          q: "Tumbuhan hijau membutuhkan cahaya matahari, air, dan udara untuk memasak makanannya sendiri (Fotosintesis).",
-          a: true,
-          cat: "Sains & Alam",
-          exp: "<b>Deep Learning:</b> Tumbuhan adalah penghasil oksigen utama di bumi. Memahami fotosintesis membantu kita menghargai pentingnya melestarikan pepohonan."
-        },
-        {
-          q: "Menggunakan botol minum sekali pakai setiap hari lebih ramah lingkungan daripada membawa tempat minum isi ulang.",
-          a: false,
-          cat: "Gaya Hidup Berkelanjutan",
-          exp: "<b>Deep Learning:</b> Sampah plastik sekali pakai menumpuk hingga ratusan tahun. Membawa tumbler isi ulang mengurangi beban sampah planet bumi."
-        }
-      ],
-      4: [
-        {
-          q: "Saat menghadapi masalah pelajaran yang rumit, memecahnya menjadi bagian-bagian kecil membuat masalah lebih mudah diselesaikan (Dekomposisi).",
-          a: true,
-          cat: "Berpikir Komputasional",
-          exp: "<b>Deep Learning:</b> Dekomposisi adalah prinsip Computational Thinking. Membagi tantangan besar menjadi langkah kecil memudahkan kita menemukan solusi."
-        },
-        {
-          q: "Algoritma adalah urutan langkah-langkah acak tanpa aturan yang jelas untuk menyelesaikan suatu tugas.",
-          a: false,
-          cat: "Logika & Algoritma",
-          exp: "<b>Deep Learning:</b> Algoritma harus terstruktur, logis, dan sistematis. Berpikir terstruktur membantu kita mengambil keputusan secara cerdas."
-        }
-      ],
-      5: [
-        {
-          q: "Jika menerima kabar mengejutkan di media sosial, kita wajib memeriksa kebenarannya sebelum membagikannya ke orang lain.",
-          a: true,
-          cat: "Literasi Digital",
-          exp: "<b>Deep Learning:</b> Saring sebelum sharing mencegah penyebaran hoaks. Menjadi warga digital beretika melindungi masyarakat dari informasi bohong."
-        },
-        {
-          q: "Membagikan kata sandi (password) akun belajar kita kepada teman dekat adalah hal yang aman dilakukan.",
-          a: false,
-          cat: "Keamanan Digital",
-          exp: "<b>Deep Learning:</b> Password adalah privasi pribadi. Menjaga kerahasiaannya melindungi identitas dan data pribadi dari risiko penyalahgunaan."
-        }
-      ],
-      6: [
-        {
-          q: "Artificial Intelligence (Kecerdasan Buatan) belajar dari data yang manusia berikan, sehingga jika datanya keliru, hasil AI juga bisa salah.",
-          a: true,
-          cat: "Teknologi & AI",
-          exp: "<b>Deep Learning:</b> AI hanyalah alat bantu. Berpikir kritis manusia tetap memegang kendali utama untuk memverifikasi dan memanfaatkan teknologi secara bijak."
-        },
-        {
-          q: "Bencana banjir di daerah perkotaan murni disebabkan oleh faktor alam tanpa ada campur tangan kebiasaan manusia.",
-          a: false,
-          cat: "Solusi Bencana",
-          exp: "<b>Deep Learning:</b> Penutupan lahan hijau dan pembuangan sampah ke saluran air menjadi faktor utama penyebab banjir. Perilaku manusia berdampak langsung pada lingkungan."
-        }
-      ]
+    // LIST MATA PELAJARAN
+    const SUBJECTS = [
+      { id: 'pancasila', name: 'Pendidikan Pancasila', icon: '🇮🇩' },
+      { id: 'indonesia', name: 'Bahasa Indonesia', icon: '📚' },
+      { id: 'matematika', name: 'Matematika', icon: '🔢' },
+      { id: 'ipas', name: 'IPAS (IPA & IPS)', icon: '🌱' },
+      { id: 'pjok', name: 'PJOK (Olahraga)', icon: '⚽' },
+      { id: 'seni', name: 'Seni & Budaya', icon: '🎨' }
+    ];
+
+    // DATABASE SOAL DEEP LEARNING PER KELAS & PER MAPEL
+    const DEEP_LEARNING_BANK = {
+      // KELAS 1
+      1: {
+        pancasila: [
+          { q: "Membantu teman yang terjatuh saat bermain di lapangan sesuai dengan nilai Gotong Royong dalam Pancasila.", a: true, cat: "Pancasila - Empati", exp: "<b>Deep Learning:</b> Saling menolong melatih kepedulian sosial sejak dini sebagai pengamalan Pancasila." },
+          { q: "Memotong pembicaraan guru saat sedang menjelaskan materi di kelas adalah perilaku sopan.", a: false, cat: "Pancasila - Etika", exp: "<b>Deep Learning:</b> Mendengarkan orang lain berbicara adalah bentuk rasa hormat dan toleransi dalam bermasyarakat." }
+        ],
+        indonesia: [
+          { q: "Membaca kata 'M-A-K-A-N' dibaca menjadi 'Makan'.", a: true, cat: "Bahasa Indonesia - Literasi", exp: "<b>Deep Learning:</b> Menyusun suku kata dengan cermat melatih kejelian berfikir dan berbahasa." },
+          { q: "Saat ingin meminta bantuan kepada teman, kita sebaiknya menggunakan kata 'Tolong'.", a: true, cat: "Bahasa Indonesia - Santun", exp: "<b>Deep Learning:</b> Kata 'Tolong', 'Maaf', dan 'Terima Kasih' adalah fondasi komunikasi yang baik." }
+        ],
+        matematika: [
+          { q: "Jika kamu punya 3 apel lalu diberi 2 apel lagi oleh ibu, jumlah apelmu sekarang menjadi 5.", a: true, cat: "Matematika - Numerasi", exp: "<b>Deep Learning:</b> Penjumlahan adalah dasar pemecahan masalah sehari-hari." },
+          { q: "Angka 8 lebih kecil nilainya daripada angka 4.", a: false, cat: "Matematika - Logika", exp: "<b>Deep Learning:</b> Menganalisis perbandingan nilai angka membantu pemahaman kuantitas." }
+        ],
+        ipas: [
+          { q: "Tumbuhan di sekitar sekolah membutuhkan air dan sinar matahari agar tidak layu.", a: true, cat: "IPAS - Lingkungan", exp: "<b>Deep Learning:</b> Makhluk hidup saling bergantung dengan lingkungan untuk bertahan hidup." },
+          { q: "Membuang sampah plastik ke sungai membuat air sungai menjadi bersih dan jernih.", a: false, cat: "IPAS - Lingkungan", exp: "<b>Deep Learning:</b> Sampah menyumbat aliran air dan merusak ekosistem lingkungan." }
+        ],
+        pjok: [
+          { q: "Mencuci tangan dengan sabun setelah berolahraga menjaga tubuh dari kuman.", a: true, cat: "PJOK - Kebersihan", exp: "<b>Deep Learning:</b> Kebersihan diri adalah perlindungan utama dari penyakit." },
+          { q: "Berlari sambil memejamkan mata di lapangan adalah cara berlari yang aman.", a: false, cat: "PJOK - Keselamatan", exp: "<b>Deep Learning:</b> Keselamatan dalam beraktivitas membutuhkan kewaspadaan dan penglihatan yang baik." }
+        ],
+        seni: [
+          { q: "Warna merah dicampur dengan warna kuning menghasilkan warna oranye/jingga.", a: true, cat: "Seni - Kreativitas", exp: "<b>Deep Learning:</b> Eksperimen warna melatih kreativitas dan kepekaan seni." },
+          { q: "Menyanyi lagu nasional dengan berteriak-teriak acak membuat irama lagu menjadi indah.", a: false, cat: "Seni - Musik", exp: "<b>Deep Learning:</b> Musik membutuhkan tempo dan nada yang selaras agar terdengar harmonis." }
+        ]
+      },
+
+      // KELAS 2
+      2: {
+        pancasila: [
+          { q: "Menghargai perbedaan agama teman di kelas adalah wujud pengamalan Sila Pertama Pancasila.", a: true, cat: "Pancasila - Toleransi", exp: "<b>Deep Learning:</b> Toleransi beragama menciptakan kedamaian dalam keberagaman." },
+          { q: "Aturan di sekolah dibuat hanya untuk memberatkan siswa dan tidak ada gunanya.", a: false, cat: "Pancasila - Aturan", exp: "<b>Deep Learning:</b> Aturan ada untuk menjaga ketertiban dan kenyamanan bersama." }
+        ],
+        indonesia: [
+          { q: "Tanda titik (.) digunakan di akhir kalimat berita.", a: true, cat: "Bahasa Indonesia - Tata Bahasa", exp: "<b>Deep Learning:</b> Penggunaan tanda baca yang tepat memperjelas makna tulisan." },
+          { q: "Kata 'Sedih' memiliki arti yang sama (sinonim) dengan kata 'Gembira'.", a: false, cat: "Bahasa Indonesia - Kosakata", exp: "<b>Deep Learning:</b> Sedih dan Gembira adalah antonim (lawan kata), bukan sinonim." }
+        ],
+        matematika: [
+          { q: "Jam menunjukkan jarum pendek di angka 7 dan jarum panjang di angka 12, artinya jam 7 tepat.", a: true, cat: "Matematika - Waktu", exp: "<b>Deep Learning:</b> Membaca jam melatih kedisiplinan dan manajemen waktu." },
+          { q: "Bangun datar persegi memiliki 3 buah sisi yang sama panjang.", a: false, cat: "Matematika - Geometri", exp: "<b>Deep Learning:</b> Persegi memiliki 4 sisi sama panjang, sedangkan segitiga memiliki 3 sisi." }
+        ],
+        ipas: [
+          { q: "Kucing berkembang biak dengan cara melahirkan (vivipar).", a: true, cat: "IPAS - Hewan", exp: "<b>Deep Learning:</b> Mengenali cara berkembang biak hewan memperluas wawasan sains alam." },
+          { q: "Matahari terbit di sebelah barat dan tenggelam di sebelah timur.", a: false, cat: "IPAS - Bumi & Tata Surya", exp: "<b>Deep Learning:</b> Matahari terbit di timur dan tenggelam di barat akibat rotasi bumi." }
+        ],
+        pjok: [
+          { q: "Pemanasan sebelum berolahraga berguna untuk mencegah cedera otot.", a: true, cat: "PJOK - Olahraga", exp: "<b>Deep Learning:</b> Pemanasan menyiapkan detak jantung dan fleksibilitas otot." },
+          { q: "Makan makanan yang terlalu banyak gula setiap hari membuat tubuh makin bugar.", a: false, cat: "PJOK - Gizi", exp: "<b>Deep Learning:</b> Gula berlebih memicu obesitas dan mengganggu kesehatan." }
+        ],
+        seni: [
+          { q: "Menggambar ekspresif adalah menggambar sesuai dengan imajinasi dan perasaan kita.", a: true, cat: "Seni - Rupa", exp: "<b>Deep Learning:</b> Seni ekspresif melatih penyaluran emosi positif anak." },
+          { q: "Tari daerah hanya boleh dipelajari oleh orang dewasa saja.", a: false, cat: "Seni - Tari", exp: "<b>Deep Learning:</b> Kebudayaan daerah wajib dilestarikan oleh generasi muda sejak dini." }
+        ]
+      },
+
+      // KELAS 3 - 6 (Menggunakan pola soal kontekstual Deep Learning serupa)
+      3: {
+        pancasila: [{ q: "Bermusyawarah menentukan ketua kelas adalah pengamalan Sila Ke-4 Pancasila.", a: true, cat: "Pancasila - Demokrasi", exp: "<b>Deep Learning:</b> Musyawarah mengutamakan keputusan bersama di atas kepentingan pribadi." }],
+        indonesia: [{ q: "Gagasan utama adalah ide pokok yang menjadi inti pembahasan dalam suatu paragraf.", a: true, cat: "Bahasa Indonesia - Membaca", exp: "<b>Deep Learning:</b> Menemukan ide pokok melatih pemahaman bacaan kritis." }],
+        matematika: [{ q: "Hasil dari 5 x 6 adalah 30.", a: true, cat: "Matematika - Perkalian", exp: "<b>Deep Learning:</b> Perkalian adalah penjumlahan berulang yang efisien." }],
+        ipas: [{ q: "Perubahan wujud benda cair menjadi gas disebut mengembun.", a: false, cat: "IPAS - Perubahan Wujud", exp: "<b>Deep Learning:</b> Cair menjadi gas adalah 'menguap'. Mengembun adalah gas menjadi cair." }],
+        pjok: [{ q: "Olahraga renang menggunakan pernapasan melalui hidung dan mulut saat berada di dalam air.", a: true, cat: "PJOK - Renang", exp: "<b>Deep Learning:</b> Mengatur napas saat berenang penting untuk ketahanan tubuh." }],
+        seni: [{ q: "Alat musik ritmis adalah alat musik yang tidak memiliki nada tetap seperti gendang.", a: true, cat: "Seni - Musik", exp: "<b>Deep Learning:</b> Alat musik ritmis menjaga tempo dan ketukan irama." }]
+      },
+      4: {
+        pancasila: [{ q: "Saling menghargai keberagaman suku dan adat istiadat mempekuat keutuhan NKRI.", a: true, cat: "Pancasila - Persatuan", exp: "<b>Deep Learning:</b> Bhinneka Tunggal Ika adalah perekat persatuan bangsa." }],
+        indonesia: [{ q: "Kalimat efektif adalah kalimat yang disusun sesuai aturan tata bahasa dan mudah dipahami.", a: true, cat: "Bahasa Indonesia - Efektif", exp: "<b>Deep Learning:</b> Berkomunikasi secara efektif menghindari kesalahpahaman." }],
+        matematika: [{ q: "Pecahan 1/2 nilainya sama besar dengan pecahan 2/4.", a: true, cat: "Matematika - Pecahan", exp: "<b>Deep Learning:</b> Pecahan senilai menunjukkan proporsi nilai yang identik." }],
+        ipas: [{ q: "Fotosintesis pada tumbuhan menghasilkan oksigen yang dibutuhkan manusia untuk bernapas.", a: true, cat: "IPAS - Tumbuhan", exp: "<b>Deep Learning:</b> Tumbuhan adalah produsen utama rantai kehidupan bumi." }],
+        pjok: [{ q: "Daya tahan jantung dapat dilatih dengan melakukan olahraga lari jarak jauh secara teratur.", a: true, cat: "PJOK - Kebugaran", exp: "<b>Deep Learning:</b> Latihan kardio memperkuat kerja organ jantung dan paru-paru." }],
+        seni: [{ q: "Teknik batik tulis menggunakan alat yang dinamakan canting dan malam/lilin.", a: true, cat: "Seni - Kriya", exp: "<b>Deep Learning:</b> Warisan budaya lokal memiliki nilai estetika dan ketelitian tinggi." }]
+      },
+      5: {
+        pancasila: [{ q: "Menyaring informasi di media sosial sebelum membagikannya mencegah berita bohong (hoaks).", a: true, cat: "Pancasila - Digital", exp: "<b>Deep Learning:</b> Berpikir kritis di era digital adalah wujud tanggung jawab sosial." }],
+        indonesia: [{ q: "Teks eksplanasi berisi tentang proses terjadinya fenomena alam atau sosial secara ilmiah.", a: true, cat: "Bahasa Indonesia - Eksplanasi", exp: "<b>Deep Learning:</b> Memahami sebab-akibat fenomena membangun nalar logis." }],
+        matematika: [{ q: "Kecepatan dihitung dari jarak yang ditempuh dibagi dengan waktu perjalanan.", a: true, cat: "Matematika - Rasio", exp: "<b>Deep Learning:</b> Rumus fisika-matematika membantu prediksi waktu tempuh sehari-hari." }],
+        ipas: [{ q: "Organ pencernaan manusia yang berfungsi menyerap sari-sari makanan adalah usus halus.", a: true, cat: "IPAS - Organ Tubuh", exp: "<b>Deep Learning:</b> Menjaga asupan gizi mengoptimalkan penyerapan energi tubuh." }],
+        pjok: [{ q: "Permainan bola voli dimainkan oleh 11 orang pemain di tiap tim di lapangan.", a: false, cat: "PJOK - Tim", exp: "<b>Deep Learning:</b> Bola voli dimainkan oleh 6 orang per tim. 11 orang adalah sepak bola." }],
+        seni: [{ q: "Tangga nada diatonis mayor umumnya menghasilkan musik yang bernuansa gembira dan bersemangat.", a: true, cat: "Seni - Musik", exp: "<b>Deep Learning:</b> Tangga nada mempengaruhi ekspresi dan emosi lagu." }]
+      },
+      6: {
+        pancasila: [{ q: "Hak asasi setiap individu dapat dijalankan tanpa memedulikan hak dan kenyamanan orang lain.", a: false, cat: "Pancasila - HAM", exp: "<b>Deep Learning:</b> Hak seseorang dibatasi oleh hak dan kebebasan orang lain." }],
+        indonesia: [{ q: "Teks pidato yang baik harus mengandung salam pembuka, isi/pesan, dan penutup yang jelas.", a: true, cat: "Bahasa Indonesia - Pidato", exp: "<b>Deep Learning:</b> Penyampaian gagasan secara terstruktur melatih kepemimpinan." }],
+        matematika: [{ q: "Rumus luas permukaan kubus adalah 6 x (sisi x sisi).", a: true, cat: "Matematika - Geometri Ruang", exp: "<b>Deep Learning:</b> Menghitung bangun ruang berguna dalam perencanaan arsitektur/konstruksi." }],
+        ipas: [{ q: "Rangkaian listrik seri jika salah satu lampunya padam, maka lampu yang lain akan tetap menyala.", a: false, cat: "IPAS - Listrik", exp: "<b>Deep Learning:</b> Pada Rangkaian Seri, aliran arus terputus total jika satu beban mati. Yang tetap menyala adalah Rangkaian Paralel." }],
+        pjok: [{ q: "Pertolongan Pertama Pada Kecelakaan (P3K) bertujuan untuk mencegah kondisi korban bertambah parah.", a: true, cat: "PJOK - Pertolongan Pertama", exp: "<b>Deep Learning:</b> Pengetahuan P3K dapat menyelamatkan nyawa saat darurat." }],
+        seni: [{ q: "Patung yang dibuat dengan mengurangi bahan seperti memahat kayu/batu disebut teknik pahat.", a: true, cat: "Seni - Patung", exp: "<b>Deep Learning:</b> Teknik subtraktif membutuhkan ketelitian dan perencanaan matang." }]
+      }
     };
 
-    // ===================================================
-    // STATE APLIKASI GAME
-    // ===================================================
+    // STATE PERMAINAN
     let selectedGrade = 1;
+    let selectedSubject = 'pancasila';
     let currentQuestions = [];
     let currentQIndex = 0;
     let score = 0;
     let timerInterval = null;
-    let timeLeft = 10; // detik per soal
+    let timeLeft = 10.0; // TEPAT 10 DETIK
     let isWebcamActive = false;
     let videoStream = null;
     let prevFrameData = null;
     let motionCheckInterval = null;
     let isAnswerLocked = false;
 
-    // Web Audio API Synthesizer (Tanpa File MP3 Eksternal)
+    // Web Audio Synthesizer
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
 
-    function initAudio() {
-      if (!audioCtx) audioCtx = new AudioCtx();
-    }
+    function initAudio() { if (!audioCtx) audioCtx = new AudioCtx(); }
 
     function playSound(type) {
       try {
@@ -432,38 +440,34 @@
 
         if (type === 'correct') {
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-          osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3); // A5
+          osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.25);
           gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-          osc.start();
-          osc.stop(audioCtx.currentTime + 0.3);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+          osc.start(); osc.stop(audioCtx.currentTime + 0.25);
         } else if (type === 'wrong') {
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
-          osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 0.4); // A2
-          gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-          osc.start();
-          osc.stop(audioCtx.currentTime + 0.4);
+          osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 0.35);
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+          osc.start(); osc.stop(audioCtx.currentTime + 0.35);
         } else if (type === 'click') {
           osc.type = 'triangle';
           osc.frequency.setValueAtTime(400, audioCtx.currentTime);
           gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
-          osc.start();
-          osc.stop(audioCtx.currentTime + 0.05);
+          osc.start(); osc.stop(audioCtx.currentTime + 0.05);
         }
-      } catch (e) { console.log("Audio not allowed yet"); }
+      } catch (e) {}
     }
 
-    // ===================================================
-    // SCRIPT UTAMA & NAVIGASI SPA
-    // ===================================================
+    // INITIALIZATION & SPA
     window.addEventListener('DOMContentLoaded', () => {
       renderGradeSelector();
+      renderSubjectSelector();
       loadHighScore();
-      checkDarkModePreference();
+      checkDarkMode();
     });
 
     function showScreen(screenName) {
@@ -488,39 +492,51 @@
       grid.innerHTML = '';
       for (let i = 1; i <= 6; i++) {
         const btn = document.createElement('button');
-        btn.onclick = () => selectGrade(i);
-        btn.id = `gradeBtn-${i}`;
-        btn.className = `p-4 rounded-2xl font-black text-lg border-2 transition flex flex-col items-center justify-center gap-1 ${
+        btn.onclick = () => { selectedGrade = i; renderGradeSelector(); playSound('click'); };
+        btn.className = `p-3 rounded-2xl font-black border-2 transition flex flex-col items-center justify-center ${
           selectedGrade === i 
-            ? 'bg-brand-purple text-white border-brand-purple shadow-lg scale-105' 
+            ? 'bg-brand-purple text-white border-brand-purple shadow-md scale-105' 
             : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600 hover:border-brand-purple'
         }`;
-        btn.innerHTML = `<span class="text-xs opacity-75">KELAS</span><span class="text-2xl">${i}</span>`;
+        btn.innerHTML = `<span class="text-[10px] opacity-75">KELAS</span><span class="text-xl">${i}</span>`;
         grid.appendChild(btn);
       }
     }
 
-    function selectGrade(g) {
-      playSound('click');
-      selectedGrade = g;
-      renderGradeSelector();
+    function renderSubjectSelector() {
+      const grid = document.getElementById('subjectGrid');
+      grid.innerHTML = '';
+      SUBJECTS.forEach(sub => {
+        const btn = document.createElement('button');
+        btn.onclick = () => { selectedSubject = sub.id; renderSubjectSelector(); playSound('click'); };
+        btn.className = `p-3 rounded-2xl font-bold border-2 transition flex items-center gap-2.5 text-xs text-left ${
+          selectedSubject === sub.id 
+            ? 'bg-amber-400 text-slate-900 border-amber-500 shadow-md scale-[1.02]' 
+            : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600 hover:border-amber-400'
+        }`;
+        btn.innerHTML = `<span class="text-xl">${sub.icon}</span><span>${sub.name}</span>`;
+        grid.appendChild(btn);
+      });
     }
 
-    // ===================================================
-    // GAME ENGINE & TIMER
-    // ===================================================
+    // GAME ENGINE
     function startGame() {
       const nameInput = document.getElementById('playerNameInput').value.trim();
       if (!nameInput) {
-        alert("Silakan isi nama kamu terlebih dahulu!");
+        alert("Silakan masukkan nama siswa terlebih dahulu!");
         return;
       }
 
-      currentQuestions = [...(QUESTION_BANK[selectedGrade] || QUESTION_BANK[1])];
+      // AMBIL SOAL KELAS & MAPEL KORRESPONDING
+      const classBank = DEEP_LEARNING_BANK[selectedGrade] || DEEP_LEARNING_BANK[1];
+      currentQuestions = classBank[selectedSubject] || classBank['pancasila'];
+
       currentQIndex = 0;
       score = 0;
 
+      const mapelObj = SUBJECTS.find(s => s.id === selectedSubject);
       document.getElementById('gameGradeBadge').innerText = `Kelas ${selectedGrade}`;
+      document.getElementById('gameSubjectBadge').innerText = mapelObj ? mapelObj.name : 'Pancasila';
       document.getElementById('gameScore').innerText = '0';
 
       showScreen('game');
@@ -538,32 +554,37 @@
       isAnswerLocked = false;
       const q = currentQuestions[currentQIndex];
 
-      document.getElementById('questionProgress').innerText = `Soal ${currentQIndex + 1} / ${currentQuestions.length}`;
+      document.getElementById('questionProgress').innerText = `${currentQIndex + 1} / ${currentQuestions.length}`;
       document.getElementById('questionCategory').innerText = q.cat;
       document.getElementById('questionText').innerText = q.q;
 
-      // Reset Bar Sensor
       document.getElementById('barLeft').style.width = '0%';
       document.getElementById('barRight').style.width = '0%';
 
-      startTimer();
+      start10SecTimer();
     }
 
-    function startTimer() {
+    // TIMER EXACT 10 DETIK
+    function start10SecTimer() {
       clearInterval(timerInterval);
-      timeLeft = 10;
+      timeLeft = 10.0;
       const timerBar = document.getElementById('timerBar');
+      const timerText = document.getElementById('timerText');
+
       timerBar.style.width = '100%';
+      timerText.innerText = '10.0 Detik';
 
       timerInterval = setInterval(() => {
         timeLeft -= 0.1;
-        const pct = Math.max(0, (timeLeft / 10) * 100);
+        if (timeLeft < 0) timeLeft = 0;
+
+        const pct = (timeLeft / 10.0) * 100;
         timerBar.style.width = `${pct}%`;
+        timerText.innerText = `${timeLeft.toFixed(1)} Detik`;
 
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
-          // Waktu Habis -> Dianggap salah
-          submitAnswer(null);
+          submitAnswer(null); // Waktu Habis
         }
       }, 100);
     }
@@ -582,14 +603,14 @@
 
       if (isCorrect) {
         playSound('correct');
-        score += 20;
+        score += 50;
         document.getElementById('gameScore').innerText = score;
-        badge.className = "inline-block px-4 py-1 rounded-full text-xs font-black uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300";
+        badge.className = "inline-block px-3 py-0.5 rounded-full text-xs font-black uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300";
         badge.innerText = "JAWABAN TEPAT! 🎉";
       } else {
         playSound('wrong');
-        badge.className = "inline-block px-4 py-1 rounded-full text-xs font-black uppercase bg-rose-100 text-rose-700 dark:bg-rose-900/60 dark:text-rose-300";
-        badge.innerText = userChoice === null ? "WAKTU HABIS! ⏰" : "JAWABAN KURANG TEPAT 💡";
+        badge.className = "inline-block px-3 py-0.5 rounded-full text-xs font-black uppercase bg-rose-100 text-rose-700 dark:bg-rose-900/60 dark:text-rose-300";
+        badge.innerText = userChoice === null ? "WAKTU 10 DETIK HABIS! ⏰" : "JAWABAN KURANG TEPAT 💡";
       }
 
       content.innerHTML = q.exp;
@@ -612,44 +633,38 @@
       stopCamera();
       showScreen('result');
 
-      const maxScore = currentQuestions.length * 20;
+      const maxScore = currentQuestions.length * 50;
       const accuracy = Math.round((score / maxScore) * 100) || 0;
 
       document.getElementById('finalScore').innerText = score;
       document.getElementById('finalAccuracy').innerText = `${accuracy}%`;
 
-      // Simpan Highscore
       const currentHigh = parseInt(localStorage.getItem('kesilir_highscore') || '0');
       if (score > currentHigh) {
         localStorage.setItem('kesilir_highscore', score);
         loadHighScore();
       }
 
-      // Isi Sertifikat
       const name = document.getElementById('playerNameInput').value.trim() || 'Siswa Hebat';
+      const mapelObj = SUBJECTS.find(s => s.id === selectedSubject);
+
       document.getElementById('certPlayerName').innerText = name;
       document.getElementById('certGrade').innerText = `Kelas ${selectedGrade}`;
+      document.getElementById('certSubject').innerText = mapelObj ? mapelObj.name : 'Pancasila';
       document.getElementById('certDate').innerText = new Date().toLocaleDateString('id-ID', {
         day: 'numeric', month: 'long', year: 'numeric'
       });
 
-      // Selebrasi Kembang Api
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
+      confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
     }
 
     function quitGame() {
-      if (confirm("Apakah kamu yakin ingin keluar dari permainan?")) {
+      if (confirm("Yakin ingin keluar dari game?")) {
         showScreen('home');
       }
     }
 
-    // ===================================================
-    // KAMERA REAL-TIME MOTION DETECTION
-    // ===================================================
+    // KAMERA SENSOR DETEKSI GERAK
     async function startCamera() {
       const video = document.getElementById('webcam');
       const notice = document.getElementById('cameraOffNotice');
@@ -660,7 +675,6 @@
         isWebcamActive = true;
         startMotionDetection();
       } catch (err) {
-        console.warn("Camera access denied or unavaliable:", err);
         notice.classList.remove('hidden');
         isWebcamActive = false;
       }
@@ -703,42 +717,36 @@
               const diff = Math.abs(currentFrame.data[i] - prevFrameData.data[i]);
 
               if (diff > 30) {
-                // Kamera di-mirror: Kiri video = Gerak Kanan Pemain
                 if (x < halfWidth) leftMotion++;
                 else rightMotion++;
               }
             }
           }
 
-          // Visual Meter
           const leftPct = Math.min(100, leftMotion * 3);
           const rightPct = Math.min(100, rightMotion * 3);
           document.getElementById('barLeft').style.width = `${leftPct}%`;
           document.getElementById('barRight').style.width = `${rightPct}%`;
 
-          // Threshold Trigger Jawaban
           if (leftPct > 60) leftCount++; else leftCount = 0;
           if (rightPct > 60) rightCount++; else rightCount = 0;
 
-          if (leftCount > 3) {
+          if (leftCount > 2) {
             submitAnswer(true);
             leftCount = 0;
-          } else if (rightCount > 3) {
+          } else if (rightCount > 2) {
             submitAnswer(false);
             rightCount = 0;
           }
         }
-
         prevFrameData = currentFrame;
       }, 150);
     }
 
-    // ===================================================
-    // FITUR UTILITY & SERTIFIKAT
-    // ===================================================
+    // UTILS
     function loadHighScore() {
-      const score = localStorage.getItem('kesilir_highscore') || '0';
-      document.getElementById('navHighScore').innerText = score;
+      const s = localStorage.getItem('kesilir_highscore') || '0';
+      document.getElementById('navHighScore').innerText = s;
     }
 
     function toggleDarkMode() {
@@ -748,15 +756,11 @@
       document.getElementById('themeIcon').className = isDark ? 'fa-solid fa-sun text-lg' : 'fa-solid fa-moon text-lg';
     }
 
-    function checkDarkModePreference() {
+    function checkDarkMode() {
       if (localStorage.getItem('kesilir_theme') === 'dark') {
         document.documentElement.classList.add('dark');
         document.getElementById('themeIcon').className = 'fa-solid fa-sun text-lg';
       }
-    }
-
-    function printCertificate() {
-      window.print();
     }
   </script>
 </body>
